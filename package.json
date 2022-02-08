@@ -1,5 +1,5 @@
 {
-  "name": "react-masonry-css",
+  "name": "@rodrigovcortezi/react-masonry-css",
   "version": "1.0.16",
   "description": "React Masonry component leveraging CSS to be fast and responsive",
   "main": "dist/react-masonry-css.cjs.js",
