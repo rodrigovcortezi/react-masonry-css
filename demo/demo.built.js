@@ -8461,7 +8461,25 @@
 
 	var React__default = /*#__PURE__*/_interopDefaultLegacy$1(react);
 
-	const _excluded = ["breakpointCols", "className", "columnClassName", "children", "columnAttrs", "column"];
+	const _excluded = ["breakpointCols", "gutter", "children"];
+
+	function _extends() {
+	  _extends = Object.assign || function (target) {
+	    for (var i = 1; i < arguments.length; i++) {
+	      var source = arguments[i];
+
+	      for (var key in source) {
+	        if (Object.prototype.hasOwnProperty.call(source, key)) {
+	          target[key] = source[key];
+	        }
+	      }
+	    }
+
+	    return target;
+	  };
+
+	  return _extends.apply(this, arguments);
+	}
 
 	function _objectWithoutProperties(source, excluded) {
 	  if (source == null) return {};
@@ -8497,65 +8515,6 @@
 	  }
 
 	  return target;
-	}
-
-	function _extends() {
-	  _extends = Object.assign || function (target) {
-	    for (var i = 1; i < arguments.length; i++) {
-	      var source = arguments[i];
-
-	      for (var key in source) {
-	        if (Object.prototype.hasOwnProperty.call(source, key)) {
-	          target[key] = source[key];
-	        }
-	      }
-	    }
-
-	    return target;
-	  };
-
-	  return _extends.apply(this, arguments);
-	}
-
-	function ownKeys(object, enumerableOnly) {
-	  var keys = Object.keys(object);
-
-	  if (Object.getOwnPropertySymbols) {
-	    var symbols = Object.getOwnPropertySymbols(object);
-	    enumerableOnly && (symbols = symbols.filter(function (sym) {
-	      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-	    })), keys.push.apply(keys, symbols);
-	  }
-
-	  return keys;
-	}
-
-	function _objectSpread(target) {
-	  for (var i = 1; i < arguments.length; i++) {
-	    var source = null != arguments[i] ? arguments[i] : {};
-	    i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
-	      _defineProperty(target, key, source[key]);
-	    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
-	      Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-	    });
-	  }
-
-	  return target;
-	}
-
-	function _defineProperty(obj, key, value) {
-	  if (key in obj) {
-	    Object.defineProperty(obj, key, {
-	      value: value,
-	      enumerable: true,
-	      configurable: true,
-	      writable: true
-	    });
-	  } else {
-	    obj[key] = value;
-	  }
-
-	  return obj;
 	}
 
 	const DEFAULT_COLUMNS = 2;
@@ -8620,34 +8579,17 @@
 	  return itemsInColumns;
 	};
 
-	const logDeprecated = message => {
-	  console.error("[Masonry]", message);
-	};
-
-	const renderColumns = (children, currentColumnCount, column, columnAttrs = {}, columnClassName) => {
+	const renderColumns = (children, currentColumnCount, gutter) => {
 	  const childrenInColumns = itemsInColumns(currentColumnCount, children);
 	  const columnWidth = `${100 / childrenInColumns.length}%`;
-	  let className = columnClassName;
-
-	  if (className && typeof className !== "string") {
-	    logDeprecated('The property "columnClassName" requires a string'); // This is a deprecated default and will be removed soon.
-
-	    if (typeof className === "undefined") {
-	      className = "my-masonry-grid_column";
-	    }
-	  }
-
-	  const columnAttributes = _objectSpread(_objectSpread(_objectSpread({}, column), columnAttrs), {}, {
-	    style: _objectSpread(_objectSpread({}, columnAttrs.style), {}, {
-	      width: columnWidth
-	    }),
-	    className
-	  });
-
 	  return childrenInColumns.map((items, i) => {
-	    return /*#__PURE__*/React__default["default"].createElement("div", _extends({}, columnAttributes, {
+	    return /*#__PURE__*/React__default["default"].createElement("div", {
+	      style: {
+	        width: columnWidth,
+	        marginLeft: gutter
+	      },
 	      key: i
-	    }), items);
+	    }, items);
 	  });
 	};
 
@@ -8655,21 +8597,8 @@
 	  let {
 	    breakpointCols = undefined,
 	    // optional, number or object { default: number, [key: number]: number }
-	    className = undefined,
-	    // required, string
-	    columnClassName = undefined,
-	    // optional, string
-	    children = undefined,
-	    // Any React children. Typically an array of JSX items
-	    // Custom attributes, however it is advised against
-	    // using these to prevent unintended issues and future conflicts
-	    // ...any other attribute, will be added to the container
-	    columnAttrs = undefined,
-	    // object, added to the columns
-	    // Deprecated props
-	    // The column property is deprecated.
-	    // It is an alias of the `columnAttrs` property
-	    column = undefined
+	    gutter = "0",
+	    children = undefined
 	  } = _ref,
 	      rest = _objectWithoutProperties(_ref, _excluded);
 
@@ -8710,19 +8639,13 @@
 	      }
 	    };
 	  }, [columnCountCallback]);
-	  let classNameOutput = className;
-
-	  if (typeof className !== "string") {
-	    logDeprecated('The property "className" requires a string'); // This is a deprecated default and will be removed soon.
-
-	    if (typeof className === "undefined") {
-	      classNameOutput = "my-masonry-grid";
+	  return /*#__PURE__*/React__default["default"].createElement("div", _extends({
+	    style: {
+	      display: "flex",
+	      marginLeft: `-${gutter}`,
+	      width: "auto"
 	    }
-	  }
-
-	  return /*#__PURE__*/React__default["default"].createElement("div", _extends({}, rest, {
-	    className: classNameOutput
-	  }), renderColumns(children, columnCount, column, columnAttrs, columnClassName));
+	  }, rest), renderColumns(children, columnCount, gutter));
 	};
 
 	var reactMasonryCss_cjs = Masonry;
@@ -8925,6 +8848,7 @@
 	    const breakpointColumnsObj = this.state.breakpointColumnsObj;
 	    const items = new Array(8).fill().map((item, i) => {
 	      return /*#__PURE__*/react.createElement("div", {
+	        class: "masonry-item",
 	        key: i
 	      }, /*#__PURE__*/react.createElement("strong", null, "Item #", i + 1), /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement("img", {
 	        src: expt.src(500, 400),
@@ -8943,15 +8867,7 @@
 	      }
 	    }), /*#__PURE__*/react.createElement(reactMasonryCss_cjs, {
 	      breakpointCols: breakpointColumnsObj,
-	      className: "my-masonry-grid",
-	      columnClassName: "my-masonry-grid_column",
-	      columnAttrs: {
-	        className: 'should be overridden',
-	        'data-test': '',
-	        style: {
-	          '--test': 'test'
-	        }
-	      }
+	      gutter: "20px"
 	    }, items), /*#__PURE__*/react.createElement("div", {
 	      style: {
 	        marginTop: '60px',

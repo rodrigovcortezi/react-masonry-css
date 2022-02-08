@@ -65,45 +65,13 @@ const itemsInColumns = (currentColumnCount, children) => {
   return itemsInColumns;
 };
 
-const logDeprecated = (message) => {
-  console.error("[Masonry]", message);
-};
-
-const renderColumns = (
-  children,
-  currentColumnCount,
-  column,
-  columnAttrs = {},
-  columnClassName
-) => {
+const renderColumns = (children, currentColumnCount, gutter) => {
   const childrenInColumns = itemsInColumns(currentColumnCount, children);
   const columnWidth = `${100 / childrenInColumns.length}%`;
-  let className = columnClassName;
-
-  if (className && typeof className !== "string") {
-    logDeprecated('The property "columnClassName" requires a string');
-
-    // This is a deprecated default and will be removed soon.
-    if (typeof className === "undefined") {
-      className = "my-masonry-grid_column";
-    }
-  }
-
-  const columnAttributes = {
-    // NOTE: the column property is undocumented and considered deprecated.
-    // It is an alias of the `columnAttrs` property
-    ...column,
-    ...columnAttrs,
-    style: {
-      ...columnAttrs.style,
-      width: columnWidth,
-    },
-    className,
-  };
 
   return childrenInColumns.map((items, i) => {
     return (
-      <div {...columnAttributes} key={i}>
+      <div style={{ width: columnWidth, marginLeft: gutter }} key={i}>
         {items}
       </div>
     );
@@ -112,19 +80,8 @@ const renderColumns = (
 
 const Masonry = ({
   breakpointCols = undefined, // optional, number or object { default: number, [key: number]: number }
-  className = undefined, // required, string
-  columnClassName = undefined, // optional, string
+  gutter = "0",
   children = undefined, // Any React children. Typically an array of JSX items
-
-  // Custom attributes, however it is advised against
-  // using these to prevent unintended issues and future conflicts
-  // ...any other attribute, will be added to the container
-  columnAttrs = undefined, // object, added to the columns
-
-  // Deprecated props
-  // The column property is deprecated.
-  // It is an alias of the `columnAttrs` property
-  column = undefined,
   ...rest
 }) => {
   const [columnCount, setColumnCount] = React.useState(() => {
@@ -163,25 +120,12 @@ const Masonry = ({
     };
   }, [columnCountCallback]);
 
-  let classNameOutput = className;
-
-  if (typeof className !== "string") {
-    logDeprecated('The property "className" requires a string');
-
-    // This is a deprecated default and will be removed soon.
-    if (typeof className === "undefined") {
-      classNameOutput = "my-masonry-grid";
-    }
-  }
   return (
-    <div {...rest} className={classNameOutput}>
-      {renderColumns(
-        children,
-        columnCount,
-        column,
-        columnAttrs,
-        columnClassName
-      )}
+    <div
+      style={{ display: "flex", marginLeft: `-${gutter}`, width: "auto" }}
+      {...rest}
+    >
+      {renderColumns(children, columnCount, gutter)}
     </div>
   );
 };

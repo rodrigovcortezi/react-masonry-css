@@ -46,7 +46,7 @@ class App extends React.Component {
 
     const items = new Array(8).fill().map((item, i) => {
       return (
-        <div key={i}>
+        <div class="masonry-item" key={i}>
           <strong>Item #{i + 1}</strong>
           <div><img src={Dummy.src(500,400)} style={{width:'100%'}} /></div>
           <div>{Dummy.text('20,60')}</div>
@@ -62,9 +62,7 @@ class App extends React.Component {
         <hr style={{visibility: 'hidden'}} />
         <Masonry
           breakpointCols={breakpointColumnsObj}
-          className="my-masonry-grid"
-          columnClassName="my-masonry-grid_column"
-          columnAttrs={{ className: 'should be overridden', 'data-test': '', style: { '--test': 'test' }}}
+          gutter="20px"
         >
           {items}
         </Masonry>
